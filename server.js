@@ -11,14 +11,21 @@ app.use(helmet()); // gets rid of powered by = express on network dev tool
 app.use(cors());
 app.use(morgan(morganSetting));
 
-app.use(function validateBearerToken(req, res, next) {
+app.use(function validateBearerToken(error, req, res, next) {
   const apiToken = process.env.API_TOKEN;
   const authToken = req.get('Authorization');
-  console.log(authToken);
+  let response;
 
   if (!authToken || authToken.split(' ')[1] !== apiToken) {
     return res.status(401).json({ error: 'Unauthorized request' });
   }
+
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error' } };
+  } else {
+    response = { error };
+  }
+  res.status(500).json(response);
 
   next();
 });
@@ -74,5 +81,5 @@ app.get('/pokemon', function handleGetPokemon(req, res) {
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-   PORT;
+  PORT;
 });
