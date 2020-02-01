@@ -49,6 +49,9 @@ const validTypes = [
   `Steel`,
   `Water`
 ];
+app.get('/', (req, res) => {
+  res.redirect('/pokemon');
+});
 
 app.get('/types', function handleGetTypes(req, res) {
   res.json(validTypes);
