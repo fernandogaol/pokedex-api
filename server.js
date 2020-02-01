@@ -56,20 +56,19 @@ app.get('/types', function handleGetTypes(req, res) {
 
 app.get('/pokemon', function handleGetPokemon(req, res) {
   let response = POKEDEX.pokemon;
+  const { name, type } = req.query;
 
   // filter our pokemon by name if name query param is present
-  if (req.query.name) {
+  if (name) {
     response = response.filter(pokemon =>
       // case insensitive searching
-      pokemon.name.toLowerCase().includes(req.query.name.toLowerCase())
+      pokemon.name.toLowerCase().includes(name.toLowerCase())
     );
   }
 
   // filter our pokemon by type if type query param is present
-  if (req.query.type) {
-    response = response.filter(pokemon =>
-      pokemon.type.includes(req.query.type)
-    );
+  if (type) {
+    response = response.filter(pokemon => pokemon.type.includes(type));
   }
 
   res.json(response);
