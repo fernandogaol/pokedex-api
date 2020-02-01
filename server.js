@@ -11,6 +11,15 @@ app.use(helmet()); // gets rid of powered by = express on network dev tool
 app.use(cors());
 app.use(morgan(morganSetting));
 
+app.use((error, req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error' } };
+  } else {
+    response = { error };
+  }
+  res.status(500).json(response);
+});
+
 app.use(function validateBearerToken(req, res, next) {
   const apiToken = process.env.API_TOKEN;
   const authToken = req.get('Authorization');
@@ -68,15 +77,6 @@ app.get('/pokemon', function handleGetPokemon(req, res) {
   }
 
   res.json(response);
-});
-
-app.use(error => {
-  if (process.env.NODE_ENV === 'production') {
-    response = { error: { message: 'server error' } };
-  } else {
-    response = { error };
-  }
-  res.status(500).json(response);
 });
 
 const PORT = process.env.PORT || 8000;
